@@ -16,18 +16,18 @@ data_X = data[:, :-1]
 data_y = data[:, -1:]
 
 result = []
-MAX = []
+MAX = -1e100000
 
-for i in range(1, data_X.shape[1] + 1):
+_pca = []
+
+for i in range(1, data_X.shape[1]):
     min = 1e10000
     print("Lan thu %s:" %i)
     pca = decomposition.PCA(n_components = i)
     print(pca)
     pca.fit(data_X)
-    # print(X)
     
     x = pca.transform(data_X)
-    print(x.shape[0])
     reg = ''
     X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
         x, data_y,
@@ -36,16 +36,13 @@ for i in range(1, data_X.shape[1] + 1):
         random_state = None
     )
     
-    # print(X_train.shape[0], y_train.shape[0], X_test.shape[0], y_test.shape[0])
     kfold = model_selection.KFold(
         shuffle=False,
         random_state=None,
         n_splits=5
     )
     
-    # print(kfold.split(X_train))
-    print(min)
-    
+
     for train_index, valid_index in kfold.split(X_train):
         x_train = X_train[train_index]; x_valid = X_train[valid_index]
         y_train = Y_train[train_index]; y_valid = Y_train[valid_index]
@@ -72,5 +69,16 @@ for i in range(1, data_X.shape[1] + 1):
             min = sum_error
             reg = linear
     result.append(reg)
-    MAX.append(reg.score(X_test, Y_test))
+    score = reg.score(X_test, Y_test)
+    
+    if(score > MAX):
+        MAX = score
+        _pca = pca
+        
 print(MAX)
+print(_pca)
+
+inp = [float(input("Nhap he so thu {0}: ".format(i))) for i in range(4)]
+
+inp = _pca.transform(np.array([inp]))
+print(result[-1].predict(inp))
