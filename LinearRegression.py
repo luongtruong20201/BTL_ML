@@ -15,16 +15,15 @@ data = df.to_numpy()
 data_X = data[:, :-1]
 data_y = data[:, -1:]
 
-result = []
 MAX = -1e100000
 
-_pca = []
+_pca = ''
+_reg = ''
 
 for i in range(1, data_X.shape[1]):
     min = 1e10000
     print("Lan thu %s:" % i)
     pca = decomposition.PCA(n_components=i)
-    print(pca)
     pca.fit(data_X)
 
     x = pca.transform(data_X)
@@ -69,17 +68,28 @@ for i in range(1, data_X.shape[1]):
         if(sum_error < min):
             min = sum_error
             reg = linear
-    result.append(reg)
+    
     score = reg.score(X_test, Y_test)
 
     if(score > MAX):
         MAX = score
         _pca = pca
+        _reg = reg
+        
+    print(score)
+        
 
+
+print("Mo hinh co gia tri dung cao nhat tai {0}".format(_pca.n_components))
 print(MAX)
 print(_pca)
 
-inp = [float(input("Nhap he so thu {0}: ".format(i + 1))) for i in range(4)]
+print("W[0]: {0}".format(_reg.intercept_[0]))
+print("W = {0}".format(_reg.coef_[0]))
 
+inp = [float(input("Nhap he so thu {0}: ".format(i + 1))) for i in range(4)]
 inp = _pca.transform(np.array([inp]))
-print(result[-1].predict(inp))
+print(inp)
+
+
+print(_reg.predict(inp))
