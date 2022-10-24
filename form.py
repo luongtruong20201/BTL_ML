@@ -2,7 +2,6 @@ from ast import main
 from tkinter import *
 from tkinter import ttk
 from sklearn import metrics, linear_model, model_selection, decomposition
-# from tkinter import filedialog
 import numpy as np
 import pandas as pd
 
@@ -27,9 +26,9 @@ Y = data[:, -1:]
 
 form = Tk()
 form.title("Machine Learning")
-form.geometry('400x300')
+form.geometry('300x200')
 
-mainframe = ttk.Frame(form, padding="3 6 25 25")
+mainframe = ttk.Frame(form, padding="3 3 25 25")
 mainframe.grid(column=0, row=0, sticky=(N,W,E,S))
 form.columnconfigure(0, weight=1)
 form.rowconfigure(0, weight=1)
@@ -42,17 +41,9 @@ pca_input = StringVar()
 pca_input_Entry = ttk.Entry(mainframe, width=15, textvariable=pca_input)
 pca_input_Entry.grid(column=2, row=2, sticky=(W,E))
 
-
-
-
-meters = StringVar()
-# ttk.Label(mainframe, textvariable=meters).grid(column=2, row=2, sticky=(W, E))
-
-
 labelW0 = ttk.Label(mainframe)
 labelW = ttk.Label(mainframe)
 labelScore = ttk.Label(mainframe)
-
 
 reg = ''
 w0 = ''
@@ -62,11 +53,12 @@ pca = ''
 entry=''
 lb = ''
 
-labelW0.grid(column=1, row=4, sticky=E)
-labelW.grid(column=1, row=5, sticky=E)
-labelScore.grid(column=1, row=6, sticky=E)
+labelW0.grid(column=1, row=5, sticky=E)
+labelW.grid(column=1, row=6, sticky=E)
+labelScore.grid(column=1, row=7, sticky=E)
 
 def calculate():
+    form.geometry("400x250")
     global X, Y, w0, w, score, pca, reg
     pca_num = int(pca_input.get())
     pca = __pca(pca_num, X)
@@ -132,33 +124,29 @@ def getResult():
     x_new = pca.transform(x)
     y_pred = reg.predict(x_new)
     lb.config(text='Predicted Result: {0}'.format(y_pred))
-    
+
+columnName = ["AT","V","AP","RH"]
 def predictResult():
     global reg, entry, lb
     pca_num = int(pca_input.get())
     newWindow = Toplevel(mainframe)
     newWindow.title('Predict the result: ')
-    newWindow.geometry('300x200')
+    newWindow.geometry('400x200')
     entry = [StringVar() for i in range(4)]
     for i in range(4):
+        ttk.Label(newWindow, text=columnName[i]).grid(row=i, column=1)
         Entry(newWindow, textvariable=entry[i]).grid(row=i, column=2)
-
+    for child in newWindow.winfo_children():
+        child.grid_configure(padx=5, pady=5)
     lb = Label(newWindow, text='')
     lb.grid(row=5, column=3)
-    Button(newWindow, text='Predict', command=getResult).grid(row=4, column=3)
+    Button(newWindow, text='Predict', command=getResult).grid(row=4, column=2)
 
             
-ttk.Button(mainframe, text="Calculate", command=calculate).grid(column=3, row=3, sticky=W)
-ttk.Label(mainframe, text="Kfold training set: ").grid(column=1, row=1, sticky=W)
+ttk.Button(mainframe, text="Calculate", command=calculate).grid(column=2, row=3, sticky=W)
+ttk.Label(mainframe, text="Kfold training set: ").grid(column=1, row=1, sticky=E)
 ttk.Label(mainframe, text="PCA dimension: ").grid(column=1, row=2, sticky=E)
 
-ttk.Button(mainframe, text="Predict", command=predictResult).grid(column=3, row=4, sticky=W)
-
-for child in mainframe.winfo_children(): 
-    child.grid_configure(padx=5, pady=5)
-
-
-# feet_entry.focus()
-# form.bind("<Return>", calculate)
+ttk.Button(mainframe, text="Predict", command=predictResult).grid(column=2, row=4, sticky=W)
 
 form.mainloop()
