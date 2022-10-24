@@ -1,4 +1,3 @@
-from ast import main
 from tkinter import *
 from tkinter import ttk
 from sklearn import metrics, linear_model, model_selection, decomposition
@@ -64,6 +63,8 @@ def calculate():
     pca = __pca(pca_num, X)
     
     pca.fit(X)
+    
+    
     x_new = pca.transform(X)
 
     x_train, x_test, y_train, y_test = model_selection.train_test_split(
@@ -72,6 +73,8 @@ def calculate():
         random_state=None,
         test_size=0.3,
     )
+
+    Min = 1e10000000
     
     n_kfold = int(kfold_training_set.get())
     kfold = model_selection.KFold(
@@ -81,7 +84,6 @@ def calculate():
     )
     
     
-    Min = 1e10000000
     for(train_index, val_index) in kfold.split(x_train):
         X_train, Y_train = x_train[train_index], y_train[train_index]
         X_val, Y_val = x_train[val_index], y_train[val_index]

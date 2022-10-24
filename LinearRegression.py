@@ -25,7 +25,6 @@ for i in range(1, data_X.shape[1]):
     print("Lan thu %s:" % i)
     pca = decomposition.PCA(n_components=i)
     pca.fit(data_X)
-
     x = pca.transform(data_X)
     reg = ''
     X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
@@ -75,9 +74,9 @@ for i in range(1, data_X.shape[1]):
         MAX = score
         _pca = pca
         _reg = reg
-        
+    
+    print(_pca)
     print(score)
-        
 
 
 print("Mo hinh co gia tri dung cao nhat tai {0}".format(_pca.n_components))
